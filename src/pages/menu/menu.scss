@@ -1,0 +1,17 @@
+page-menu {
+  .logout-button {
+    position: absolute;
+    bottom: 0;
+  }
+  .profile-photo {
+    height: 30px;
+    vertical-align: middle;
+    display: inline-block;
+    border-radius: 50%;
+    margin-left: 5px;
+  }
+  .profile-name {
+    display: inline;
+    margin-left: 5px;
+  }
+}

@@ -1,0 +1,29 @@
+<!--
+  Generated template for the MenuPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-menu [content]="homeNav">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <button ion-item detail-none *ngFor="let page of pages" (tap)="goTo(page.name, page.page)">
+        <ion-icon name="{{page.icon}}" item-left></ion-icon>
+        {{page.name}}
+      </button>
+    </ion-list>
+  </ion-content>
+  <ion-footer>
+    <button class="logout-button" menuClose no-lines ion-item detail-none (tap)="logout()">
+      <ion-icon name="log-out" item-left></ion-icon>
+      Logout
+    </button>
+  </ion-footer>
+</ion-menu>
+
+<ion-nav id="homeNav" [root]="homeRoot" #homeNav swipeBackEnabled="false"></ion-nav>

@@ -1,0 +1,54 @@
+<!--
+  Generated template for the OrganizationsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu" color="cyan"></ion-icon>
+    </button>
+    <ion-title>Organizations</ion-title>
+    <ion-buttons end>
+      <button *ngIf="(firebase.userOrganizations() | async)?.length === 0" ion-button icon-only (click)="addOrganization($event)">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <button *ngIf="(firebase.userOrganizations() | async)?.length > 0" ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <div *ngIf="(firebase.userOrganizations() | async)?.length > 0">
+    <ion-list>
+      <ion-item-sliding *ngFor="let organization of firebase.userOrganizations() | async" (tap)="groups(organization)">
+        <ion-item>
+          <h2>{{organization.title}}</h2>
+          <p>Created: {{organization.created | date: 'MMMM dd, yyyy'}}</p>
+        </ion-item>
+        <ion-item-options side="right" (ionSwipe)="delete(organization)">
+          <button ion-button expandable color="primary" (click)="edit(organization)">
+            <ion-icon name="md-create"></ion-icon>
+            Edit
+          </button>
+          <button ion-button expandable color="danger" (click)="delete(organization)">
+            <ion-icon name="trash"></ion-icon>
+            Delete
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+  <div *ngIf="(firebase.userOrganizations() | async)?.length === 0" margin text-center>
+    <span>Get started!</span>
+  </div>
+  <div *ngIf="!(firebase.userOrganizations() | async)" margin text-center>
+    <ion-spinner></ion-spinner>
+  </div>
+</ion-content>

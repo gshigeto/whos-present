@@ -1,0 +1,48 @@
+<!--
+  Generated template for the CreateAccountPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Create Account</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <form [formGroup]="createForm">
+    <ion-item>
+      <ion-label floating>First Name</ion-label>
+      <ion-input formControlName="firstName" type="text" name="firstName" id="firstName"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Last Name</ion-label>
+      <ion-input formControlName="lastName" type="text" name="lastName" id="lastName"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Email</ion-label>
+      <ion-input formControlName="email" type="email" name="username" id="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Password</ion-label>
+      <ion-input formControlName="password" type="password" name="password" id="password"></ion-input>
+    </ion-item>
+    <span padding-left class="password-hint" ion-text color="gray">*Password must be 8 characters or more</span>
+    <ion-item>
+      <ion-label floating>Confirm Password</ion-label>
+      <ion-input formControlName="confirmPassword" type="password" name="password" id="password"></ion-input>
+    </ion-item>
+
+    <ion-row margin-top>
+      <button ion-button icon-left block color="primary" (tap)="createAccount(createForm)" [disabled]="!createForm.valid">
+          Create Account
+        </button>
+    </ion-row>
+  </form>
+
+</ion-content>
