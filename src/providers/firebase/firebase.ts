@@ -92,7 +92,7 @@ export class FirebaseProvider {
   public createFirebaseUser(credentials: { firstName: string, lastName: string, email: string, password: string }): firebase.Promise<any> {
     return new Promise((resolve, reject) => {
       this.angularFireAuth.auth.createUserWithEmailAndPassword(credentials.email, credentials.password).then(_ => {
-        this.userExists(credentials).then(_ => {
+        this.userExists(`${credentials.firstName} ${credentials.lastName}`).then(_ => {
           this.sendVerificationEmail().then(_ => {
             resolve();
           }).catch(err => {
@@ -113,8 +113,8 @@ export class FirebaseProvider {
   public facebookLogin(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.facebook.login().then(resp => {
-        this.angularFireAuth.auth.signInWithCredential(firebase.auth.FacebookAuthProvider.credential(resp.authResponse.accessToken)).then(_ => {
-          resolve(this.userExists());
+        this.angularFireAuth.auth.signInWithCredential(firebase.auth.FacebookAuthProvider.credential(resp.authResponse.accessToken)).then(credentials => {
+          resolve(this.userExists(credentials.displayName));
         });
       }).catch(err => {
         reject(err);
@@ -183,7 +183,7 @@ export class FirebaseProvider {
    * If user does not exist, create a record
    * If the user does exist, update last_login
    */
-  private userExists(credentials?: { firstName: string, lastName: string }): Promise<any> {
+  private userExists(displayName: string): Promise<any> {
     return new Promise((resolve, reject) => {
       let authStateSubscription = this.angularFireAuth.authState.subscribe(user => {
         authStateSubscription.unsubscribe();
@@ -192,7 +192,7 @@ export class FirebaseProvider {
           let now = moment().format();
           if (!existingUser.created) {
             user.updateProfile({
-              displayName: `${credentials.firstName} ${credentials.lastName}`,
+              displayName: displayName,
               photoURL: null
             }).then(_ => {
               this.angularFireDB.object(`users/${user.uid}`).set({
