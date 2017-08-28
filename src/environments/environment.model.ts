@@ -1,5 +1,6 @@
 export interface Environment {
-  firebase: Firebase
+  FIREBASE: Firebase;
+  GOOGLE_ANALYTICS: string;
 }
 
 export interface Firebase {
