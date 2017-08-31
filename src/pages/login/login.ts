@@ -4,7 +4,7 @@ import { AlertController, IonicPage, LoadingController, NavController } from 'io
 import { MenuPage } from '../menu/menu';
 import { CreateAccountPage } from './create-account/create-account'
 
-import { FirebaseProvider, ToasterProvider } from '../../providers'
+import { FirebaseProvider, GoogleAnalyticsProvider, ToasterProvider } from '../../providers'
 
 /**
  * Generated class for the LoginPage page.
@@ -24,10 +24,15 @@ export class LoginPage {
   constructor(
     private alert: AlertController,
     private firebase: FirebaseProvider,
+    private ga: GoogleAnalyticsProvider,
     private loadingCtrl: LoadingController,
     private navCtrl: NavController,
     private toast: ToasterProvider
   ) {
+  }
+
+  ionViewDidLoad() {
+    this.ga.trackView('Login');
   }
 
   createAccount() {

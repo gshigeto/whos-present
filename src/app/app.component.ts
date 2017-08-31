@@ -3,7 +3,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { FirebaseProvider } from '../providers';
+import { FirebaseProvider, GoogleAnalyticsProvider } from '../providers';
 
 import { LoginPage } from '../pages/login/login'
 import { MenuPage } from '../pages/menu/menu';
@@ -17,10 +17,11 @@ export class MyApp {
   rootPage: any;
 
   constructor(
+    private firebase: FirebaseProvider,
+    private ga: GoogleAnalyticsProvider,
     private platform: Platform,
     private statusBar: StatusBar,
     private splashScreen: SplashScreen,
-    private firebase: FirebaseProvider
   ) {
     this.platform.ready().then(() => {
       this.init();
@@ -28,6 +29,7 @@ export class MyApp {
   }
 
   init() {
+    this.ga.init();
     this.firebase.authenticated().then((user: firebase.User) => {
       if (user) {
         if (!user.emailVerified && (user.providerData[0] && user.providerData[0].providerId !== 'facebook.com')) this.nav.setRoot(LoginPage);

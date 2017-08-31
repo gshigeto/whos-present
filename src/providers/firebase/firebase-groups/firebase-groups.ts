@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import * as moment from 'moment';
 
 /*
@@ -18,20 +18,14 @@ export class FirebaseGroupsProvider {
     let now = moment().format();
     return new Promise((resolve, reject) => {
       let groupId = this.angularFireDB.list(`groups`).push({
-        owner: ownerId,
-        organization_id: orgId,
+        creator: ownerId,
+        organization: orgId,
         created: now,
         title: title
       }).key
 
-      this.angularFireDB.object(`organizations/${orgId}/groups/${groupId}`).set({
-        title: title,
-        created: now
-      }).then(_ => {
-        this.angularFireDB.object(`users/${ownerId}/groups/${groupId}`).set({
-          title: title,
-          created: now
-        }).then(_ => {
+      this.angularFireDB.object(`organizations/${orgId}/groups/${groupId}`).set(title).then(_ => {
+        this.angularFireDB.object(`users/${ownerId}/groups/${groupId}`).set(title).then(_ => {
           resolve();
         }).catch(err => {
           reject(err);
@@ -56,6 +50,13 @@ export class FirebaseGroupsProvider {
       this.angularFireDB.object(`organizations/${orgId}/groups/${groupId}`).update({ title: newTitle }),
       this.angularFireDB.object(`user/${ownerId}/groups/${groupId}`).update({ title: newTitle })
     ]);
+  }
+
+  public updatePeople(groupId: string, people: Array<any>) {
+    this.angularFireDB.object(`groups/${groupId}/people`).remove();
+    people.forEach(person => {
+      this.angularFireDB.object(`groups/${groupId}/people/${person.$key}`).set(person.$value);
+    });
   }
 
 }

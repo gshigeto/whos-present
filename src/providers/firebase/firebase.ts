@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 
 import { FacebookProvider } from '../facebook/facebook';
+import { GoogleAnalyticsProvider } from '../google-analytics/google-analytics';
 
-import { User, SubOrganization } from '../../models/user.model';
-import { FirebaseOrganizationsProvider } from './firebase-organizations/firebase-organizations';
+import { User, Organization } from '../../models';
 import { FirebaseGroupsProvider } from './firebase-groups/firebase-groups';
+import { FirebaseOrganizationsProvider } from './firebase-organizations/firebase-organizations';
+import { FirebasePeopleProvider } from './firebase-people/firebase-people';
 
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
+import { AngularFireDatabase, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2/database';
 import * as firebase from 'firebase/app';
 
 import * as moment from 'moment';
@@ -29,7 +31,9 @@ export class FirebaseProvider {
     private angularFireDB: AngularFireDatabase,
     private facebook: FacebookProvider,
     private firebaseGroups: FirebaseGroupsProvider,
-    private firebaseOrg: FirebaseOrganizationsProvider
+    private firebaseOrg: FirebaseOrganizationsProvider,
+    private firebasePeople: FirebasePeopleProvider,
+    private ga: GoogleAnalyticsProvider
   ) {
     angularFireAuth.authState.subscribe(authUser => {
       if (authUser) {
@@ -46,6 +50,7 @@ export class FirebaseProvider {
   }
 
   private init() {
+    this.ga.setUserId(this.authUser.uid);
     this.user = this.angularFireDB.object(`users/${this.authUser.uid}`);
     this.firebaseOrg.init(this.authUser.uid);
   }
@@ -139,6 +144,13 @@ export class FirebaseProvider {
   }
 
   /**
+   * Get user groups observable
+   */
+  public userGroups() {
+    return this.firebaseOrg.userGroups;
+  }
+
+  /**
    * Create a new organization for the currently logged in user
    * @param title new organization title
    */
@@ -167,15 +179,65 @@ export class FirebaseProvider {
    * Get groups and people associated with organization
    * @param orgId organization key to get information for
    */
-  public organizationInfo(orgId: string): Promise<any> {
+  public organizationEntities(orgId: string) {
     return Promise.all([
       this.angularFireDB.list(`organizations/${orgId}/groups`),
       this.angularFireDB.list(`organizations/${orgId}/people`)
     ])
   }
 
+  /**
+   * Get groups and people associated with organization
+   * @param orgId organization key to get information for
+   */
+  public organizationPeople(orgId: string) {
+    return this.angularFireDB.list(`organizations/${orgId}/people`)
+  }
+
+  /**
+   * Create a group under an organization
+   * @param orgId organization key to create group under
+   * @param title new group title
+   */
   public createGroup(orgId: string, title: string): Promise<any> {
     return this.firebaseGroups.create(this.authUser.uid, orgId, title);
+  }
+
+  public addGroupPeople(groupId: string, people: any) {
+    return this.firebaseGroups.updatePeople(groupId, people);
+  }
+
+  public groupInformation(groupId: string): FirebaseObjectObservable<any> {
+    return this.angularFireDB.object(`groups/${groupId}`);
+  }
+
+  /**
+   * Get all people in a group
+   * @param groupId group key to get people for
+   */
+  public groupPeople(groupId: string): FirebaseListObservable<any> {
+    return this.angularFireDB.list(`groups/${groupId}/people`);
+  }
+
+  /**
+   * Create a person under an organization
+   * @param orgId organization key to create group under
+   * @param person new person
+   */
+  public createPerson(orgId: string, name: string): Promise<any> {
+    return this.firebasePeople.create(this.authUser.uid, orgId, name);
+  }
+
+  /**
+   * Get person information from key
+   * @param personId key of the person
+   */
+  public getPerson(personId: string): FirebaseObjectObservable<any> {
+    return this.angularFireDB.object(`people/${personId}`);
+  }
+
+  public takeAttendance(orgId: string, people: Array<any>, description: string) {
+    return this.firebaseOrg.takeAttendance(orgId, people, description);
   }
 
   /**

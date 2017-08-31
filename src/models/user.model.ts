@@ -1,3 +1,5 @@
+import { SubGroup, SubOrganization } from '.'
+
 export interface User {
   created: string;
   display_name: string;
@@ -6,15 +8,4 @@ export interface User {
 
   groups?: Array<SubGroup>;
   organizations?: Array<SubOrganization>;
-}
-
-export interface SubGroup {
-  title: string;
-  id: string;
-}
-
-export interface SubOrganization {
-  $key?: string;
-  title: string;
-  created: string;
 }

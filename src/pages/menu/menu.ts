@@ -1,10 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, MenuController, NavController, NavParams, Nav } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Nav } from 'ionic-angular';
 
-import { GroupsPage } from './groups/groups';
-import { OrganizationsPage } from './organizations/organizations';
-import { ReportsPage } from './reports/reports';
-import { SettingsPage } from './settings/settings';
+import { TabsPage } from './tabs/tabs';
 import { LoginPage } from '../login/login';
 
 import { FirebaseProvider } from '../../providers';
@@ -23,39 +20,9 @@ import { FirebaseProvider } from '../../providers';
 })
 export class MenuPage {
   @ViewChild('homeNav') nav: Nav;
-  homeRoot: any = OrganizationsPage;
+  homeRoot: any = TabsPage;
 
-  allPages = [{
-    name: 'Organizations',
-    icon: 'person',
-    page: OrganizationsPage
-  }, {
-    name: 'Groups',
-    icon: 'people',
-    page: GroupsPage
-  }, {
-    name: 'Reports',
-    icon: 'stats',
-    page: ReportsPage
-  }, {
-    name: 'Settings',
-    icon: 'settings',
-    page: SettingsPage
-  }];
-  pages: Array<any> = [];
-
-  constructor(private firebase: FirebaseProvider, private menu: MenuController, public navCtrl: NavController, public navParams: NavParams) {
-    this.setPages('organizations')
-  }
-
-  goTo(name: string, page) {
-    this.menu.close();
-    this.setPages(name);
-    this.homeRoot = page;
-  }
-
-  setPages(name: string) {
-    this.pages = this.allPages.filter(page => { return page.name.toLowerCase() !== name.toLowerCase(); });
+  constructor(private firebase: FirebaseProvider, public navCtrl: NavController, public navParams: NavParams) {
   }
 
   logout() {

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, LoadingController, NavController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 
 import { LoginPage } from '../login';
@@ -20,7 +20,7 @@ import { FirebaseProvider, ToasterProvider } from '../../../providers';
 export class CreateAccountPage {
 
   createForm: any;
-  constructor(private firebase: FirebaseProvider, private formBuilder: FormBuilder, private loading: LoadingController, private navCtrl: NavController, private navParams: NavParams, private toast: ToasterProvider) {
+  constructor(private firebase: FirebaseProvider, private formBuilder: FormBuilder, private loading: LoadingController, private navCtrl: NavController, private toast: ToasterProvider) {
     this.createForm = this.formBuilder.group({
       firstName: ['', Validators.compose([Validators.pattern('[a-zA-Z ]*'), Validators.required])],
       lastName: ['', Validators.compose([Validators.pattern('[a-zA-Z ]*'), Validators.required])],

@@ -10,14 +10,6 @@
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content>
-    <ion-list>
-      <button ion-item detail-none *ngFor="let page of pages" (tap)="goTo(page.name, page.page)">
-        <ion-icon name="{{page.icon}}" item-left></ion-icon>
-        {{page.name}}
-      </button>
-    </ion-list>
-  </ion-content>
   <ion-footer>
     <button class="logout-button" menuClose no-lines ion-item detail-none (tap)="logout()">
       <ion-icon name="log-out" item-left></ion-icon>

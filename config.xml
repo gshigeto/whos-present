@@ -3,7 +3,7 @@
     <name>Who's Present</name>
     <description>A simple attendance application for anyone</description>
     <author email="gshigeto@gmail.com" href="http://gavinnitta.com/">Gavin Nitta</author>
-    <content original-src="index.html" src="http://192.168.0.8:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-intent href="http://*/*" />
@@ -79,14 +79,17 @@
     </platform>
     <allow-navigation href="http://192.168.0.8:8100" />
     <allow-navigation href="http://10.0.0.63:8100" />
+    <allow-navigation href="http://192.168.1.33:8100" />
     <engine name="android" spec="^6.2.3" />
     <engine name="ios" spec="^4.4.0" />
+    <plugin name="cordova-plugin-app-version" spec="^0.1.9" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-facebook4" spec="^1.9.1">
         <variable name="APP_ID" value="138956090035498" />
         <variable name="APP_NAME" value="Who's Present" />
     </plugin>
+    <plugin name="cordova-plugin-google-analytics" spec="^1.8.3" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
     <plugin name="cordova-plugin-statusbar" spec="^2.2.2" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />

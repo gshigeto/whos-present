@@ -1,0 +1,77 @@
+<!--
+  Generated template for the HomePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu" color="cyan"></ion-icon>
+    </button>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+
+
+</ion-header>
+
+
+<ion-content>
+  <div *ngIf="!(firebase.userOrganizations() | async)" margin text-center>
+    <ion-spinner></ion-spinner>
+  </div>
+  <div *ngIf="(firebase.userOrganizations() | async)?.length === 0" margin text-center>
+    <p>You need to be a part of an organization or group to take attendance</p>
+    <button margin-top (tap)="createOrganization($event)" ion-button round full>Create Organization</button>
+  </div>
+  <div *ngIf="(firebase.userOrganizations() | async)?.length > 0" margin>
+    <div margin-bottom text-center>Who's Present?</div>
+
+    <ion-item>
+      <ion-label fixed>Description</ion-label>
+      <ion-input placeholder="Optional" type="text" [(ngModel)]="description"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Organization</ion-label>
+      <ion-select [(ngModel)]="selectedOrg" (ionChange)="organizationSelected()">
+        <ion-option *ngFor="let org of firebase.userOrganizations() | async" [value]="org">
+          {{org.$value}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="(orgGroups | async)">
+      <ion-label>Group</ion-label>
+      <ion-select [(ngModel)]="selectedGroup" (ionChange)="groupSelected()">
+        <ion-option [value]="'none'">
+          No Group
+        </ion-option>
+        <ion-option *ngFor="let group of orgGroups | async" [value]="group">
+          {{group.$value}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="!(orgGroups | async) && selectedOrg" text-center>
+      <ion-spinner></ion-spinner>
+    </ion-item>
+
+    <ion-item *ngIf="(orgPeople | async)?.length > 0">
+      <ion-label>People Present</ion-label>
+      <ion-select [(ngModel)]="selectedPeople" multiple="true">
+        <ion-option *ngFor="let person of orgPeople | async" [value]="person">
+          {{person.$value}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="(orgPeople | async)?.length === 0">
+      <button ion-button round full (tap)="createPerson()">Add Person to {{selectedOrg.$value}}</button>
+    </ion-item>
+    <ion-item *ngIf="!(orgPeople | async) && selectedGroup" text-center>
+      <ion-spinner></ion-spinner>
+    </ion-item>
+
+    <button margin-top color="secondary" [disabled]="!selectedOrg || !selectedGroup" (tap)="takeRoll()" ion-button round full>Take roll!</button>
+  </div>
+</ion-content>

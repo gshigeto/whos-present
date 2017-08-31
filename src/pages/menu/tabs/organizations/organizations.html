@@ -12,9 +12,6 @@
     </button>
     <ion-title>Organizations</ion-title>
     <ion-buttons end>
-      <button *ngIf="(firebase.userOrganizations() | async)?.length === 0" ion-button icon-only (click)="addOrganization($event)">
-        <ion-icon name="add"></ion-icon>
-      </button>
       <button *ngIf="(firebase.userOrganizations() | async)?.length > 0" ion-button icon-only (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </button>
@@ -27,10 +24,9 @@
 <ion-content>
   <div *ngIf="(firebase.userOrganizations() | async)?.length > 0">
     <ion-list>
-      <ion-item-sliding *ngFor="let organization of firebase.userOrganizations() | async" (tap)="groups(organization)">
+      <ion-item-sliding *ngFor="let organization of firebase.userOrganizations() | async" (tap)="details(organization)">
         <ion-item>
-          <h2>{{organization.title}}</h2>
-          <p>Created: {{organization.created | date: 'MMMM dd, yyyy'}}</p>
+          <h2>{{organization.$value}}</h2>
         </ion-item>
         <ion-item-options side="right" (ionSwipe)="delete(organization)">
           <button ion-button expandable color="primary" (click)="edit(organization)">
@@ -46,7 +42,8 @@
     </ion-list>
   </div>
   <div *ngIf="(firebase.userOrganizations() | async)?.length === 0" margin text-center>
-    <span>Get started!</span>
+    <p>Get started by creating an organization</p>
+    <button margin-top (tap)="addOrganization($event)" ion-button round full>Create Organization</button>
   </div>
   <div *ngIf="!(firebase.userOrganizations() | async)" margin text-center>
     <ion-spinner></ion-spinner>

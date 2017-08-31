@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { AlertController, IonicPage, NavController, NavParams, PopoverController, ViewController } from 'ionic-angular';
+import { AlertController, IonicPage, NavController, PopoverController, ViewController } from 'ionic-angular';
 
-import { SubOrganization } from '../../../models/user.model';
+import { SubOrganization } from '../../../../models';
 
-import { FirebaseProvider, ToasterProvider } from '../../../providers';
-import { OrgGroupsPage } from './org-groups/org-groups';
+import { FirebaseProvider, GoogleAnalyticsProvider, ToasterProvider } from '../../../../providers';
+import { OrganizationDetailsPage } from '../organization-details/organization-details';
 
 /**
  * Generated class for the OrganizationsPage page.
@@ -22,12 +22,16 @@ export class OrganizationsPage {
 
   constructor(
     private alert: AlertController,
-    private navCtrl: NavController,
-    private navParams: NavParams,
-    private popover: PopoverController,
     private firebase: FirebaseProvider,
+    private ga: GoogleAnalyticsProvider,
+    private navCtrl: NavController,
+    private popover: PopoverController,
     private toast: ToasterProvider
   ) {
+  }
+
+  ionViewDidEnter() {
+    this.ga.trackView('Organizations');
   }
 
   addOrganization() {
@@ -117,8 +121,8 @@ export class OrganizationsPage {
     confirm.present();
   }
 
-  groups(organization: SubOrganization) {
-    this.navCtrl.push(OrgGroupsPage, { SubOrg: organization });
+  details(organization: SubOrganization) {
+    this.navCtrl.push(OrganizationDetailsPage, { organization: organization });
   }
 }
 
