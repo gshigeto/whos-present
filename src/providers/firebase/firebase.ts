@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { FacebookProvider } from '../facebook/facebook';
 import { GoogleAnalyticsProvider } from '../google-analytics/google-analytics';
 
-import { User, Organization } from '../../models';
+import { User } from '../../models';
 import { FirebaseGroupsProvider } from './firebase-groups/firebase-groups';
 import { FirebaseOrganizationsProvider } from './firebase-organizations/firebase-organizations';
 import { FirebasePeopleProvider } from './firebase-people/firebase-people';
@@ -35,18 +35,6 @@ export class FirebaseProvider {
     private firebasePeople: FirebasePeopleProvider,
     private ga: GoogleAnalyticsProvider
   ) {
-    angularFireAuth.authState.subscribe(authUser => {
-      if (authUser) {
-        this.angularFireDB.object(`users/${authUser.uid}`).update({
-          last_login: moment().format()
-        }).then(_ => {
-          this.authUser = authUser
-          this.init();
-        });
-      } else {
-        this.destroy();
-      }
-    });
   }
 
   private init() {
@@ -66,7 +54,18 @@ export class FirebaseProvider {
     return new Promise(resolve => {
       let sub = this.angularFireAuth.authState.subscribe((user: firebase.User) => {
         sub.unsubscribe();
-        resolve(user);
+        if (user) {
+          this.angularFireDB.object(`users/${user.uid}`).update({
+            last_login: moment().format()
+          }).then(_ => {
+            this.authUser = user
+            this.init();
+            resolve(user);
+          });
+        } else {
+          this.destroy();
+          resolve();
+        }
       })
     });
   }
@@ -175,6 +174,14 @@ export class FirebaseProvider {
     return this.firebaseOrg.update(this.authUser.uid, orgId, newTitle);
   }
 
+  public organizationAttendance(orgId: string): FirebaseListObservable<any> {
+    return this.angularFireDB.list(`organizations/${orgId}/attendance`, {
+      query: {
+        limitToLast: 10
+      }
+    });
+  }
+
   /**
    * Get groups and people associated with organization
    * @param orgId organization key to get information for
@@ -203,8 +210,12 @@ export class FirebaseProvider {
     return this.firebaseGroups.create(this.authUser.uid, orgId, title);
   }
 
-  public addGroupPeople(groupId: string, people: any) {
-    return this.firebaseGroups.updatePeople(groupId, people);
+  public addGroupPerson(groupId: string, person: any) {
+    return this.firebaseGroups.addPerson(groupId, person);
+  }
+
+  public deleteGroupPerson(groupId: string, personId: any) {
+    return this.firebaseGroups.deletePerson(groupId, personId);
   }
 
   public groupInformation(groupId: string): FirebaseObjectObservable<any> {
@@ -236,8 +247,12 @@ export class FirebaseProvider {
     return this.angularFireDB.object(`people/${personId}`);
   }
 
-  public takeAttendance(orgId: string, people: Array<any>, description: string) {
-    return this.firebaseOrg.takeAttendance(orgId, people, description);
+  public takeAttendance(orgId: string, group: string, people: Array<any>, description: string) {
+    return this.firebaseOrg.takeAttendance(orgId, group, people, description);
+  }
+
+  public getAttendanceInformation(orgId: string, attendanceId: string) {
+    return this.angularFireDB.object(`organizations/${orgId}/attendance/${attendanceId}`);
   }
 
   /**

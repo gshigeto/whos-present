@@ -15,6 +15,18 @@
 
 </ion-header>
 
-<ion-content padding>
-  Reports page
+<ion-content>
+  <div *ngIf="(userOrganizations | async)?.length > 0">
+    <ion-card *ngFor="let organization of userOrganizations | async" (tap)="reports(organization)">
+      <ion-card-header>
+        {{organization.$value}}
+      </ion-card-header>
+    </ion-card>
+  </div>
+  <div *ngIf="(userOrganizations | async)?.length === 0" margin text-center>
+    <p>No organizations found</p>
+  </div>
+  <div *ngIf="!(userOrganizations | async)" margin text-center>
+    <ion-spinner></ion-spinner>
+  </div>
 </ion-content>

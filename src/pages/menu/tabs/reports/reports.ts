@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 
+import { FirebaseKeyValue } from '../../../../models';
+import { FirebaseProvider, GoogleAnalyticsProvider } from '../../../../providers';
+
+import { OrganizationReportPage } from '../organization-report/organization-report';
 /**
  * Generated class for the ReportsPage page.
  *
@@ -15,11 +19,21 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class ReportsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  userOrganizations: any;
+
+  constructor(
+    private firebase: FirebaseProvider,
+    private ga: GoogleAnalyticsProvider,
+    public navCtrl: NavController) {
+    this.userOrganizations = this.firebase.userOrganizations();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ReportsPage');
+  ionViewDidEnter() {
+    this.ga.trackView('Reports')
+  }
+
+  reports(organization: FirebaseKeyValue) {
+    this.navCtrl.push(OrganizationReportPage, { organization: organization })
   }
 
 }

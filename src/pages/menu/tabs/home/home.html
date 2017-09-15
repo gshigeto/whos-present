@@ -22,8 +22,7 @@
     <ion-spinner></ion-spinner>
   </div>
   <div *ngIf="(firebase.userOrganizations() | async)?.length === 0" margin text-center>
-    <p>You need to be a part of an organization or group to take attendance</p>
-    <button margin-top (tap)="createOrganization($event)" ion-button round full>Create Organization</button>
+    <p>No organizations found</p>
   </div>
   <div *ngIf="(firebase.userOrganizations() | async)?.length > 0" margin>
     <div margin-bottom text-center>Who's Present?</div>

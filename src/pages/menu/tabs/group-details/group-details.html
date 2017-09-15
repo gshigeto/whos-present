@@ -7,12 +7,12 @@
 <ion-header>
 
   <ion-navbar color="primary">
-    <ion-title>{{group.$value}}</ion-title>
-    <ion-buttons end>
-      <button ion-button icon-only (tap)="addPeople()">
-        <ion-icon name="md-create"></ion-icon>
+    <ion-buttons start>
+      <button ion-button (tap)="close()">
+        <span ion-text color="white">Close</span>
       </button>
     </ion-buttons>
+    <ion-title>{{group.$value}}</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -20,14 +20,12 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngIf="!(groupPeople | async)" text-center>
-      <ion-spinner></ion-spinner>
-    </ion-item>
-    <ion-item *ngIf="(groupPeople | async)?.length === 0">
-      No People Found
-    </ion-item>
-    <ion-item *ngFor="let person of groupPeople | async">
-      {{person.$value}}
+    <ion-list-header>
+      Members
+    </ion-list-header>
+    <ion-item *ngFor="let person of people">
+      <ion-label>{{person.$value}}</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="person.checked" (ionChange)="check(person)"></ion-checkbox>
     </ion-item>
   </ion-list>
 </ion-content>

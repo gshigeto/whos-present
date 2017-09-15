@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AlertController, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
 
 import { GroupDetailsPage } from '../group-details/group-details'
 import { PersonPage } from '../person/person';
@@ -27,6 +27,7 @@ export class OrganizationDetailsPage {
   constructor(
     private alert: AlertController,
     private firebase: FirebaseProvider,
+    private modal: ModalController,
     private navCtrl: NavController,
     private navParams: NavParams,
     private toast: ToasterProvider
@@ -44,7 +45,9 @@ export class OrganizationDetailsPage {
   }
 
   groupDetails(group: any) {
-    this.navCtrl.push(GroupDetailsPage, { group: group });
+    let modal = this.modal.create(GroupDetailsPage, { group: group, organization: this.organization });
+    modal.present();
+    // this.navCtrl.push(GroupDetailsPage, { group: group });
   }
 
   private addGroup(): void {

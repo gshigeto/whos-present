@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 
 import { FirebaseProvider } from '../../../../providers';
+
 
 /**
  * Generated class for the PersonPage page.
@@ -17,18 +18,29 @@ import { FirebaseProvider } from '../../../../providers';
 })
 export class PersonPage {
 
-  public doughnutChartLabels: string[] = ['Present', 'Absent'];
-  public doughnutChartData: number[] = [];
-  public doughnutChartType: string = 'doughnut';
+  data = [];
+  view = [];
+  colorScheme = {
+    domain: ['#5AA454', '#A10A28']
+  };
 
+  attendance = [];
   personObject: any;
   person: any;
-  constructor(private firebase: FirebaseProvider, public navCtrl: NavController, public navParams: NavParams) {
+
+  constructor(private firebase: FirebaseProvider, public navCtrl: NavController, public navParams: NavParams, private platform: Platform) {
+    this.attendance = [];
+    this.view = [this.platform.width(), this.platform.height() / 2];
     this.personObject = this.navParams.get('person');
     this.person = this.firebase.getPerson(this.personObject.$key);
-    let subscription = this.person.subscribe(person => {
-      subscription.unsubscribe();
-      this.doughnutChartData = [person.timesPresent, person.timesAbsent]
+    this.person.subscribe(person => {
+      for (var key in person.attendance) {
+        this.firebase.getAttendanceInformation(person.organization, key).subscribe(info => {
+          info.attended = person.attendance[info.$key];
+          this.attendance.push(info);
+        });
+      }
+      this.data.push({ name: 'Present', value: person.timesPresent }, { name: 'Absent', value: person.timesAbsent });
     });
   }
 
@@ -36,13 +48,8 @@ export class PersonPage {
     console.log('ionViewDidLoad PersonPage');
   }
 
-  // events
-  public chartClicked(e: any): void {
-    console.log(e);
-  }
-
-  public chartHovered(e: any): void {
-    console.log(e);
+  onSelect(event) {
+    console.log(event);
   }
 
 }

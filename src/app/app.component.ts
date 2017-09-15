@@ -33,9 +33,15 @@ export class MyApp {
     this.firebase.authenticated().then((user: firebase.User) => {
       if (user) {
         if (!user.emailVerified && (user.providerData[0] && user.providerData[0].providerId !== 'facebook.com')) this.nav.setRoot(LoginPage);
-        else this.nav.setRoot(MenuPage);
-      }
-      else this.nav.setRoot(LoginPage);
+        else {
+          this.firebase.userOrganizations().subscribe(orgs => {
+            this.nav.setRoot(MenuPage);
+            if (orgs.length === 0) {
+              console.log('we are here');
+            }
+          });
+        }
+      } else this.nav.setRoot(LoginPage);
     }).then(_ => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();

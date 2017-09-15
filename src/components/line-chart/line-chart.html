@@ -1,0 +1,10 @@
+<!-- Generated template for the LineChartComponent component -->
+<ngx-charts-line-chart [view]="view" [scheme]="colorScheme" [results]="data" [xAxis]="false" [yAxis]="true" [showXAxisLabel]="true"
+  [xAxisLabel]="'Date'" [timeline]="true" [showYAxisLabel]="true" [yAxisLabel]="'Attendance Percentage'" [autoScale]="true"
+  (select)="onSelect($event)">
+  <ng-template #seriesTooltipTemplate let-model="model">
+    <p>
+      {{model[0].name | date: 'MM/dd/yy'}} &bull; {{model[0].value | number:'1.0-0'}}%
+    </p>
+  </ng-template>
+</ngx-charts-line-chart>

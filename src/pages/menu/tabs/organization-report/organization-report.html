@@ -1,0 +1,49 @@
+<!--
+  Generated template for the OrganizationReportPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>{{organization.$value}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+  <div *ngIf="orgAttendanceLoaded">
+    <ion-grid *ngFor="let group of results">
+      <ion-row *ngIf="group.data[0].series.length > 1" text-center>
+        <ion-col no-padding>
+          <h2>{{group.name}}</h2>
+        </ion-col>
+      </ion-row>
+      <line-chart *ngIf="group.data[0].series.length > 1" [data]="group.data"></line-chart>
+    </ion-grid>
+  </div>
+
+  <div *ngIf="peopleLoaded">
+    <ion-grid *ngFor="let person of people" (tap)="personDetails(person)">
+      <ion-row margin-top text-center>
+        <ion-col no-padding>
+          <h2 no-margin>{{person.$value}}</h2>
+        </ion-col>
+      </ion-row>
+      <ion-row text-center>
+        <ion-col no-padding>
+          <p no-margin>Attendance {{person.percent | percent:'1.0-0'}}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row text-center class="pie-chart">
+        <ion-col no-padding>
+          <pie-chart [view]="view" [data]="person.attendance"></pie-chart>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+</ion-content>

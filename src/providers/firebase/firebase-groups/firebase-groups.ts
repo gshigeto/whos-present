@@ -52,11 +52,12 @@ export class FirebaseGroupsProvider {
     ]);
   }
 
-  public updatePeople(groupId: string, people: Array<any>) {
-    this.angularFireDB.object(`groups/${groupId}/people`).remove();
-    people.forEach(person => {
-      this.angularFireDB.object(`groups/${groupId}/people/${person.$key}`).set(person.$value);
-    });
+  public addPerson(groupId: string, person: any) {
+    this.angularFireDB.object(`groups/${groupId}/people/${person.$key}`).set(person.$value);
+  }
+
+  public deletePerson(groupId: string, personId: any) {
+    this.angularFireDB.object(`groups/${groupId}/people/${personId}`).remove();
   }
 
 }

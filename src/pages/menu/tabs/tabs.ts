@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
 
-import { FirebaseProvider } from '../../../providers';
-
 /**
  * Generated class for the TabsPage tabs.
  *
@@ -19,9 +17,9 @@ export class TabsPage {
 
   homeRoot = 'HomePage'
   organizationsRoot = 'OrganizationsPage'
-  groupsRoot = 'GroupsPage'
+  reportsRoot = 'ReportsPage'
 
 
-  constructor(private firebase: FirebaseProvider) { }
+  constructor() { }
 
 }

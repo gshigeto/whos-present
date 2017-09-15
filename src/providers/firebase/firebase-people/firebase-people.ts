@@ -21,6 +21,7 @@ export class FirebasePeopleProvider {
       let personKey = this.angularFireDB.list(`people`).push({
         creator: creatorId,
         created: now,
+        organization: orgId,
         name: name,
         timesPresent: 0,
         timesAbsent: 0

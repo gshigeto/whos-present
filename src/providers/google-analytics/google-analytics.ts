@@ -39,4 +39,13 @@ export class GoogleAnalyticsProvider {
     this.ga.trackView(view);
   }
 
+  /**
+   * Track an event with Google Analytics
+   * @param category
+   * @param action
+   */
+  trackEvent(category: string, action: string, label?: string): void {
+    this.ga.trackEvent(category, action, label);
+  }
+
 }

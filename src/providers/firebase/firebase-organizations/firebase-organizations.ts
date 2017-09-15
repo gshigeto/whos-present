@@ -80,26 +80,27 @@ export class FirebaseOrganizationsProvider {
     ]);
   }
 
-  public takeAttendance(orgId: string, people: Array<any>, description: string): Promise<any> {
+  public takeAttendance(orgId: string, group: string, people: Array<any>, description: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      let now = moment().format();
-      description = description || 'No Description';
-      let attendanceKey = this.angularFireDB.list(`attendance`).push({
-        created: now,
-        description: description
-      }).key;
 
-      this.angularFireDB.object(`organizations/${orgId}/attendance/${attendanceKey}`).set(description).then(_ => {
-        people.forEach(person => {
-          let update = person.present ? 'timesPresent' : 'timesAbsent';
-          this.angularFireDB.object(`people/${person.$key}/attendance/${attendanceKey}`).set(person.present || false);
-          let subscription = this.angularFireDB.object(`people/${person.$key}/${update}`).subscribe(number => {
-            subscription.unsubscribe();
-            this.angularFireDB.object(`people/${person.$key}/${update}`).set(number.$value + 1);
-          });
+      let peoplePresent = people.filter(person => { return person.present });
+      let attendanceKey = this.angularFireDB.list(`organizations/${orgId}/attendance`).push({
+        created: moment().format(),
+        description: description || 'No Description',
+        group: group,
+        present: peoplePresent.length,
+        absent: people.length - peoplePresent.length
+      }).key
+
+      people.forEach(person => {
+        let update = person.present ? 'timesPresent' : 'timesAbsent';
+        this.angularFireDB.object(`people/${person.$key}/attendance/${attendanceKey}`).set(person.present || false);
+        let subscription = this.angularFireDB.object(`people/${person.$key}/${update}`).subscribe(number => {
+          subscription.unsubscribe();
+          this.angularFireDB.object(`people/${person.$key}/${update}`).set(number.$value + 1);
         });
-        resolve();
       });
+      resolve();
     });
   }
 

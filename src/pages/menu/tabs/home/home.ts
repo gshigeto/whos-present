@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, IonicPage, LoadingController, NavController, NavParams } from 'ionic-angular';
-import { Person, SubGroup, SubOrganization } from '../../../../models';
+import { SubOrganization } from '../../../../models';
 
 import { FirebaseProvider, GoogleAnalyticsProvider, ToasterProvider } from '../../../../providers';
 
@@ -50,32 +50,6 @@ export class HomePage {
     this.orgPeople = null;
     this.allOrgPeople = null;
     this.description = null;
-  }
-
-  addOrganization() {
-    let prompt = this.alert.create({
-      title: 'New Organization',
-      message: "Title of new organization",
-      inputs: [
-        {
-          name: 'title',
-          placeholder: 'Title'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel'
-        },
-        {
-          text: 'Create',
-          handler: data => {
-            if (data.title === '') this.toast.showToast('Title cannot be empty');
-            else this.firebase.createOrganization(data.title);
-          }
-        }
-      ]
-    });
-    prompt.present();
   }
 
   organizationSelected() {
@@ -138,8 +112,12 @@ export class HomePage {
         }
         attendance.push(person);
       });
-      this.firebase.takeAttendance(this.selectedOrg.$key, attendance, this.description).then(_ => {
+      let group;
+      if (this.selectedGroup === 'none') group = 'No Group';
+      else group = this.selectedGroup.$value
+      this.firebase.takeAttendance(this.selectedOrg.$key, group, attendance, this.description).then(_ => {
         loader.dismiss();
+        this.ga.trackEvent(`Attendance`, `Submit`)
         this.toast.showToast(`Attendance Saved!`);
         this.erase();
       });

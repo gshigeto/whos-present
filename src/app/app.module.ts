@@ -1,3 +1,4 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -10,7 +11,7 @@ import { Facebook } from '@ionic-native/facebook';
 import { GoogleAnalytics } from '@ionic-native/google-analytics';
 // Ionic Native
 
-import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 // Angular Fire
 import { AngularFireModule } from 'angularfire2';
@@ -20,6 +21,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 
 // Environment Variables
 import { ENV } from '@app/env';
+console.log(ENV.GOOGLE_ANALYTICS);
 
 // Providers
 import {
@@ -34,9 +36,9 @@ import {
 } from '../providers';
 // Providers
 
-import { MyApp } from './app.component';
 import { LoginPageModule } from '../pages/login/login.module';
 import { MenuPageModule } from '../pages/menu/menu.module';
+import { MyApp } from './app.component';
 
 @NgModule({
   declarations: [
@@ -46,10 +48,11 @@ import { MenuPageModule } from '../pages/menu/menu.module';
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(ENV.FIREBASE),
+    BrowserAnimationsModule,
     BrowserModule,
-    ChartsModule,
     LoginPageModule,
     MenuPageModule,
+    NgxChartsModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],

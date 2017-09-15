@@ -52,7 +52,10 @@ export class OrganizationsPage {
           text: 'Create',
           handler: data => {
             if (data.title === '') this.toast.showToast('Title cannot be empty');
-            else this.firebase.createOrganization(data.title);
+            else {
+              this.firebase.createOrganization(data.title);
+              this.ga.trackEvent(`Organizations`, `Create`);
+            }
           }
         }
       ]
@@ -87,6 +90,7 @@ export class OrganizationsPage {
             else {
               this.firebase.updateOrganization(organization.$key, data.title).then(_ => {
                 this.toast.showToast(`Organization Updated`);
+                this.ga.trackEvent(`Organizations`, `Update`);
               }).catch(err => {
                 this.toast.showToast(`${err}`);
               });
@@ -98,9 +102,9 @@ export class OrganizationsPage {
     prompt.present();
   }
 
-  delete(organization: SubOrganization) {
+  delete(organization: any) {
     let confirm = this.alert.create({
-      title: `Delete ${organization.title}?`,
+      title: `Delete ${organization.$value}?`,
       message: 'Deleting an organization will delete all groups and people associated and cannot be undone.',
       buttons: [
         {
@@ -111,6 +115,7 @@ export class OrganizationsPage {
           handler: () => {
             this.firebase.deleteOrganization(organization.$key).then(_ => {
               this.toast.showToast('Organization Deleted');
+              this.ga.trackEvent(`Organizations`, `Delete`);
             }).catch(err => {
               this.toast.showToast(err);
             });
@@ -136,7 +141,7 @@ export class OrganizationsPage {
   `
 })
 export class OrganizationPopover {
-  constructor(private alert: AlertController, private firebase: FirebaseProvider, private toast: ToasterProvider, private viewCtrl: ViewController) { }
+  constructor(private alert: AlertController, private firebase: FirebaseProvider, private ga: GoogleAnalyticsProvider, private toast: ToasterProvider, private viewCtrl: ViewController) { }
 
   addOrganization() {
     this.viewCtrl.dismiss();
@@ -157,7 +162,10 @@ export class OrganizationPopover {
           text: 'Create',
           handler: data => {
             if (data.title === '') this.toast.showToast('Title cannot be empty');
-            else this.firebase.createOrganization(data.title);
+            else {
+              this.firebase.createOrganization(data.title);
+              this.ga.trackEvent(`Organizations`, `Create`);
+            }
           }
         }
       ]

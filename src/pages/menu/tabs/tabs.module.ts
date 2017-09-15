@@ -5,6 +5,7 @@ import { TabsPage } from './tabs';
 import { GroupDetailsPageModule } from './group-details/group-details.module';
 import { OrganizationsPageModule } from './organizations/organizations.module';
 import { OrganizationDetailsPageModule } from './organization-details/organization-details.module';
+import { OrganizationReportPageModule } from './organization-report/organization-report.module';
 import { PersonPageModule } from './person/person.module';
 import { ReportsPageModule } from './reports/reports.module';
 import { SettingsPageModule } from './settings/settings.module';
@@ -17,6 +18,7 @@ import { SettingsPageModule } from './settings/settings.module';
     GroupDetailsPageModule,
     OrganizationsPageModule,
     OrganizationDetailsPageModule,
+    OrganizationReportPageModule,
     PersonPageModule,
     ReportsPageModule,
     SettingsPageModule,

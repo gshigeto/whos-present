@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertController, IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AlertController, IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
 import { FirebaseProvider, GoogleAnalyticsProvider } from '../../../../providers';
 
@@ -18,8 +18,9 @@ import { FirebaseProvider, GoogleAnalyticsProvider } from '../../../../providers
 export class GroupDetailsPage {
 
   group: any;
+  organization: any;
   groupPeople: any;
-  allOrganizationPeople: any;
+  people: any;
   type: string;
 
   constructor(
@@ -27,40 +28,33 @@ export class GroupDetailsPage {
     private firebase: FirebaseProvider,
     private ga: GoogleAnalyticsProvider,
     public navCtrl: NavController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    private viewCtrl: ViewController
   ) {
     this.group = this.navParams.get('group');
-    this.groupPeople = this.firebase.groupPeople(this.group.$key);
-    let subscription = this.firebase.groupInformation(this.group.$key).subscribe(group => {
-      subscription.unsubscribe();
-      this.allOrganizationPeople = this.firebase.organizationPeople(group.organization);
+    this.organization = this.navParams.get('organization');
+    this.firebase.groupPeople(this.group.$key).subscribe(groupPeople => {
+      this.firebase.organizationPeople(this.organization.$key).subscribe(orgPeople => {
+        this.people = orgPeople;
+        this.people.forEach(person => {
+          let test = groupPeople.some(groupPerson => groupPerson.$key === person.$key);
+          if (test) person.checked = true;
+        });
+      });
     });
   }
 
   ionViewDidEnter() {
-    console.log('ionViewDidLoad GroupDetailsPage');
+    this.ga.trackView('Group Details');
   }
 
-  addPeople() {
-    let alert = this.alert.create();
-    alert.setTitle('Who belongs to this group?');
-    this.allOrganizationPeople.subscribe(people => {
-      people.forEach(person => {
-        alert.addInput({
-          type: 'checkbox',
-          label: `${person.$value}`,
-          value: person
-        });
-      });
-      alert.addButton('Cancel');
-      alert.addButton({
-        text: 'Save',
-        handler: data => {
-          this.firebase.addGroupPeople(this.group.$key, data);
-        }
-      });
-      alert.present();
-    });
+  close() {
+    this.viewCtrl.dismiss();
+  }
+
+  check(person: any) {
+    if (person.checked) this.firebase.addGroupPerson(this.group.$key, person)
+    else this.firebase.deleteGroupPerson(this.group.$key, person.$key);
   }
 
 }

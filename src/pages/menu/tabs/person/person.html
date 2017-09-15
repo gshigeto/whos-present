@@ -14,18 +14,40 @@
 
 
 <ion-content>
-  <div class="chart" *ngIf="((person | async)?.timesPresent + (person | async)?.timesAbsent) > 0">
-    <canvas baseChart [data]="[((person | async)?.timesPresent), ((person | async)?.timesAbsent)]" [labels]="doughnutChartLabels"
-      [chartType]="doughnutChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
-    <div>
-      <ion-row text-center>
-        <ion-col>Present:</ion-col>
-      </ion-row>
-      <ion-row text-center>
-        <ion-col>{{(person | async)?.timesPresent / ((person | async)?.timesPresent + (person | async)?.timesAbsent) * 100 | number:'2.0-2'}}%</ion-col>
-      </ion-row>
-    </div>
-  </div>
+  <ion-grid *ngIf="((person | async)?.timesPresent + (person | async)?.timesAbsent) > 0">
+    <ion-row margin-top text-center>
+      <ion-col no-padding>
+        <h2 no-margin>Attendance {{(person | async)?.timesPresent / ((person | async)?.timesPresent + (person | async)?.timesAbsent) |
+          percent:'1.0-0'}}
+        </h2>
+      </ion-col>
+    </ion-row>
+    <ion-row text-center>
+      <ion-col no-padding>
+        <p no-margin>Present {{(person | async)?.timesPresent}} &bull; Absent {{(person | async)?.timesAbsent}}</p>
+      </ion-col>
+    </ion-row>
+
+    <pie-chart [view]="view" [data]="data"></pie-chart>
+  </ion-grid>
+
+  <ion-list>
+    <ion-list-header>
+      Attendance
+    </ion-list-header>
+
+    <ion-item *ngFor="let info of attendance">
+      <ion-icon *ngIf="info.attended" name='checkmark' item-start></ion-icon>
+      <ion-icon *ngIf="!info.attended" name='close' item-start></ion-icon>
+      <ion-label>
+        {{info.description}}
+      </ion-label>
+      <ion-note item-end>
+        {{info.created | date:'MM/dd/yy'}}
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
   <div *ngIf="((person | async)?.timesPresent + (person | async)?.timesAbsent) === 0" margin text-center>
     <p>No attendance for {{personObject.$value}}</p>
   </div>
